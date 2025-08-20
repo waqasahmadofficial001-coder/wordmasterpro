@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordMaster Pro | Advanced Word Counter Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #1abc9c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        body.dark-theme {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.dark-theme header {
+            background-color: #2d2d2d;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        body.dark-theme .logo h1 {
+            color: #f0f0f0;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        body.dark-theme nav a {
+            color: #f0f0f0;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Editor Section */
+        .editor-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        body.dark-theme .editor-section {
+            background-color: #2d2d2d;
+        }
+
+        .toolbar {
+            display: flex;
+            padding: 15px;
+            background: var(--light);
+            border-bottom: 1px solid #ddd;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        body.dark-theme .toolbar {
+            background: #3d3d3d;
+            border-color: #555;
+        }
+
+        .toolbar button {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        body.dark-theme .toolbar button {
+            background: #444;
+            border-color: #555;
+            color: #f0f0f0;
+        }
+
+        .toolbar button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .text-area-container {
+            position: relative;
+        }
+
+        #text-input {
+            width: 100%;
+            min-height: 300px;
+            padding: 20px;
+            border: none;
+            resize: none;
+            font-size: 16px;
+            line-height: 1.6;
+            outline: none;
+            background: white;
+            color: #333;
+        }
+
+        body.dark-theme #text-input {
+            background: #222;
+            color: #f0f0f0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        body.dark-theme .card {
+            background: #2d2d2d;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        body.dark-theme .card-header {
+            border-color: #444;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        body.dark-theme .card-title {
+            color: #f0f0f0;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        body.dark-theme .stat-box {
+            background: #3d3d3d;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        /* Keyword Density */
+        .keyword-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .keyword-tab {
+            padding: 5px 10px;
+            background: var(--light);
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        body.dark-theme .keyword-tab {
+            background: #3d3d3d;
+        }
+
+        .keyword-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .keyword-list {
+            list-style: none;
+        }
+
+        .keyword-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        body.dark-theme .keyword-item {
+            border-color: #444;
+        }
+
+        .keyword-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Activities */
+        .activity-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .activity-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .activity-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Options Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transform: translateY(-20px);
+            transition: var(--transition);
+        }
+
+        body.dark-theme .modal {
+            background: #2d2d2d;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        body.dark-theme .modal-header {
+            border-color: #444;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .option-group {
+            margin-bottom: 20px;
+        }
+
+        .option-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            color: #333;
+        }
+
+        body.dark-theme select, 
+        body.dark-theme input[type="text"] {
+            background: #3d3d3d;
+            border-color: #555;
+            color: #f0f0f0;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        body.dark-theme .modal-footer {
+            border-color: #444;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        body.dark-theme .btn-secondary {
+            background: #3d3d3d;
+            color: #f0f0f0;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-theme footer {
+            background: #2d2d2d;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Export Section */
+        .export-section {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: var(--light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.dark-theme .export-btn {
+            background: #3d3d3d;
+            color: #f0f0f0;
+        }
+
+        .export-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-font"></i>
+                    <h1>WordMaster Pro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">More Tools</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-layout">
+            <div class="editor-section">
+                <div class="toolbar">
+                    <button id="undo-btn"><i class="fas fa-undo"></i> Undo</button>
+                    <button id="redo-btn"><i class="fas fa-redo"></i> Redo</button>
+                    <button id="clear-btn"><i class="fas fa-broom"></i> Clear</button>
+                    <button id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+                    <button id="paste-btn"><i class="fas fa-paste"></i> Paste</button>
+                    <button id="grammar-btn"><i class="fas fa-spell-check"></i> Check Grammar</button>
+                    <button id="options-btn"><i class="fas fa-cog"></i> Options</button>
+                </div>
+                <div class="text-area-container">
+                    <textarea id="text-input" placeholder="Start typing or paste your text here..."></textarea>
+                </div>
+                <div class="export-section">
+                    <button class="export-btn" id="copy-clipboard">
+                        <i class="fas fa-clipboard"></i> Copy to Clipboard
+                    </button>
+                    <button class="export-btn" id="share-btn">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                    <button class="export-btn" id="export-txt">
+                        <i class="fas fa-file-export"></i> Export as TXT
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Details</h2>
+                        <button class="toggle-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value" id="word-count">0</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="char-count">0</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="sentence-count">0</div>
+                            <div class="stat-label">Sentences</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="paragraph-count">0</div>
+                            <div class="stat-label">Paragraphs</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="reading-level">N/A</div>
+                            <div class="stat-label">Reading Level</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="reading-time">0s</div>
+                            <div class="stat-label">Reading Time</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="speaking-time">0s</div>
+                            <div class="stat-label">Speaking Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Keyword Density</h2>
+                        <button class="toggle-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="keyword-tabs">
+                        <div class="keyword-tab active">x1</div>
+                        <div class="keyword-tab">x2</div>
+                        <div class="keyword-tab">x3</div>
+                    </div>
+                    <div id="keyword-content">
+                        <p>Start typing your document to get a list of most used keywords.</p>
+                        <ul class="keyword-list" id="keyword-list"></ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Activities</h2>
+                        <button class="toggle-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="activity-content">
+                        <p>Keep track of the number of words you write each day using the activity button.</p>
+                        <button class="activity-btn" id="activity-btn">Activity Log</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Modal -->
+    <div class="modal-overlay" id="options-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Options</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="option-group">
+                    <label class="option-label">Theme</label>
+                    <select id="theme-select">
+                        <option value="default">Default</option>
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">Font</label>
+                    <select id="font-select">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Verdana">Verdana</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label class="option-label">Date Format</label>
+                    <select id="date-format">
+                        <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                        <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+                        <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="auto-resize" checked>
+                        <label for="auto-resize">Automatically resize the text box as I type</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-options">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 WordMaster Pro. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const textInput = document.getElementById('text-input');
+            const wordCount = document.getElementById('word-count');
+            const charCount = document.getElementById('char-count');
+            const sentenceCount = document.getElementById('sentence-count');
+            const paragraphCount = document.getElementById('paragraph-count');
+            const readingLevel = document.getElementById('reading-level');
+            const readingTime = document.getElementById('reading-time');
+            const speakingTime = document.getElementById('speaking-time');
+            const keywordList = document.getElementById('keyword-list');
+            const optionsModal = document.getElementById('options-modal');
+            const optionsBtn = document.getElementById('options-btn');
+            const closeModal = document.querySelector('.close-modal');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const saveOptions = document.getElementById('save-options');
+            const themeSelect = document.getElementById('theme-select');
+            const fontSelect = document.getElementById('font-select');
+            const autoResize = document.getElementById('auto-resize');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const pasteBtn = document.getElementById('paste-btn');
+            const undoBtn = document.getElementById('undo-btn');
+            const redoBtn = document.getElementById('redo-btn');
+            const copyClipboard = document.getElementById('copy-clipboard');
+            const shareBtn = document.getElementById('share-btn');
+            const exportTxt = document.getElementById('export-txt');
+            const activityBtn = document.getElementById('activity-btn');
+
+            // State variables
+            let textHistory = [];
+            let historyPointer = -1;
+            let dailyWordCount = JSON.parse(localStorage.getItem('dailyWordCount')) || {};
+
+            // Initialize
+            updateStats();
+            loadOptions();
+
+            // Event Listeners
+            textInput.addEventListener('input', function() {
+                updateStats();
+                updateKeywordDensity();
+                saveToHistory();
+                updateDailyWordCount();
+            });
+
+            optionsBtn.addEventListener('click', openModal);
+            closeModal.addEventListener('click', closeOptionsModal);
+            cancelBtn.addEventListener('click', closeOptionsModal);
+            saveOptions.addEventListener('click', saveOptionsChanges);
+            clearBtn.addEventListener('click', clearText);
+            copyBtn.addEventListener('click', copyText);
+            pasteBtn.addEventListener('click', pasteText);
+            undoBtn.addEventListener('click', undoText);
+            redoBtn.addEventListener('click', redoText);
+            copyClipboard.addEventListener('click', copyToClipboard);
+            shareBtn.addEventListener('click', shareText);
+            exportTxt.addEventListener('click', exportToTxt);
+            activityBtn.addEventListener('click', showActivityLog);
+
+            // Functions
+            function updateStats() {
+                const text = textInput.value;
+                
+                // Word count
+                const words = text.trim() ? text.trim().split(/\s+/) : [];
+                wordCount.textContent = words.length;
+                
+                // Character count
+                charCount.textContent = text.length;
+                
+                // Sentence count
+                const sentences = text.trim() ? text.split(/[.!?]+/) : [];
+                sentenceCount.textContent = sentences.length - 1;
+                
+                // Paragraph count
+                const paragraphs = text.trim() ? text.split(/\n\s*\n/) : [];
+                paragraphCount.textContent = paragraphs.length;
+                
+                // Reading time (assuming 225 words per minute)
+                const readTime = Math.ceil(words.length / 225 * 60);
+                readingTime.textContent = `${readTime}s`;
+                
+                // Speaking time (assuming 150 words per minute)
+                const speakTime = Math.ceil(words.length / 150 * 60);
+                speakingTime.textContent = `${speakTime}s`;
+                
+                // Reading level (simplified)
+                if (words.length >= 10 && sentences.length >= 2) {
+                    readingLevel.textContent = calculateReadingLevel(text);
+                } else {
+                    readingLevel.textContent = 'N/A';
+                }
+            }
+
+            function calculateReadingLevel(text) {
+                // Simple Flesch-Kincaid approximation
+                const words = text.trim().split(/\s+/);
+                const sentences = text.split(/[.!?]+/).filter(s => s.length > 0);
+                const syllables = countSyllables(text);
+                
+                const wordsPerSentence = words.length / sentences.length;
+                const syllablesPerWord = syllables / words.length;
+                
+                const level = 0.39 * wordsPerSentence + 11.8 * syllablesPerWord - 15.59;
+                return level >= 0 ? level.toFixed(1) : 'N/A';
+            }
+
+            function countSyllables(text) {
+                // Simplified syllable counting
+                const words = text.toLowerCase().split(/\s+/);
+                let count = 0;
+                
+                for (const word of words) {
+                    if (word.length <= 3) {
+                        count += 1;
+                        continue;
+                    }
+                    
+                    count += word
+                        .split(/[^aeiouy]+/)
+                        .filter(s => s.length > 0)
+                        .length;
+                }
+                
+                return count;
+            }
+
+            function updateKeywordDensity() {
+                const text = textInput.value.toLowerCase();
+                if (!text.trim()) {
+                    keywordList.innerHTML = '';
+                    return;
+                }
+                
+                // Remove punctuation and split into words
+                const words = text
+                    .replace(/[^\w\s]|_/g, '')
+                    .replace(/\s+/g, ' ')
+                    .split(' ')
+                    .filter(word => word.length > 4); // Only consider words longer than 4 characters
+                
+                // Count word frequencies
+                const wordCounts = {};
+                for (const word of words) {
+                    wordCounts[word] = (wordCounts[word] || 0) + 1;
+                }
+                
+                // Convert to array and sort by frequency
+                const sortedWords = Object.entries(wordCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10); // Top 10 keywords
+                
+                // Update the UI
+                keywordList.innerHTML = '';
+                for (const [word, count] of sortedWords) {
+                    const li = document.createElement('li');
+                    li.className = 'keyword-item';
+                    li.innerHTML = `<span>${word}</span><span>${count}</span>`;
+                    keywordList.appendChild(li);
+                }
+            }
+
+            function saveToHistory() {
+                // Only save if text has changed
+                if (textHistory[historyPointer] !== textInput.value) {
+                    textHistory = textHistory.slice(0, historyPointer + 1);
+                    textHistory.push(textInput.value);
+                    historyPointer = textHistory.length - 1;
+                }
+            }
+
+            function undoText() {
+                if (historyPointer > 0) {
+                    historyPointer--;
+                    textInput.value = textHistory[historyPointer];
+                    updateStats();
+                    updateKeywordDensity();
+                }
+            }
+
+            function redoText() {
+                if (historyPointer < textHistory.length - 1) {
+                    historyPointer++;
+                    textInput.value = textHistory[historyPointer];
+                    updateStats();
+                    updateKeywordDensity();
+                }
+            }
+
+            function clearText() {
+                textInput.value = '';
+                updateStats();
+                updateKeywordDensity();
+                saveToHistory();
+            }
+
+            function copyText() {
+                textInput.select();
+                document.execCommand('copy');
+            }
+
+            async function pasteText() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    textInput.value += text;
+                    updateStats();
+                    updateKeywordDensity();
+                    saveToHistory();
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                }
+            }
+
+            function openModal() {
+                optionsModal.classList.add('active');
+            }
+
+            function closeOptionsModal() {
+                optionsModal.classList.remove('active');
+            }
+
+            function saveOptionsChanges() {
+                // Apply theme
+                document.body.className = '';
+                if (themeSelect.value === 'dark') {
+                    document.body.classList.add('dark-theme');
+                } else if (themeSelect.value === 'light') {
+                    // Light theme is default
+                }
+                
+                // Apply font
+                document.body.style.fontFamily = fontSelect.value;
+                
+                // Save to localStorage
+                localStorage.setItem('wordCounterOptions', JSON.stringify({
+                    theme: themeSelect.value,
+                    font: fontSelect.value,
+                    autoResize: autoResize.checked
+                }));
+                
+                closeOptionsModal();
+            }
+
+            function loadOptions() {
+                const savedOptions = JSON.parse(localStorage.getItem('wordCounterOptions')) || {};
+                
+                if (savedOptions.theme) {
+                    themeSelect.value = savedOptions.theme;
+                    if (savedOptions.theme === 'dark') {
+                        document.body.classList.add('dark-theme');
+                    }
+                }
+                
+                if (savedOptions.font) {
+                    fontSelect.value = savedOptions.font;
+                    document.body.style.fontFamily = savedOptions.font;
+                }
+                
+                if (savedOptions.autoResize !== undefined) {
+                    autoResize.checked = savedOptions.autoResize;
+                }
+            }
+
+            function copyToClipboard() {
+                textInput.select();
+                document.execCommand('copy');
+                
+                // Show feedback
+                const originalText = copyClipboard.innerHTML;
+                copyClipboard.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyClipboard.innerHTML = originalText;
+                }, 2000);
+            }
+
+            function shareText() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'WordMaster Pro Document',
+                        text: textInput.value.substring(0, 100) + '...',
+                        url: window.location.href
+                    })
+                    .catch(error => {
+                        console.log('Error sharing:', error);
+                    });
+                } else {
+                    alert('Web Share API not supported in your browser. You can copy the link manually.');
+                }
+            }
+
+            function exportToTxt() {
+                const text = textInput.value;
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.txt';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }
+
+            function updateDailyWordCount() {
+                const today = new Date().toLocaleDateString();
+                const words = textInput.value.trim() ? textInput.value.trim().split(/\s+/) : [];
+                
+                if (!dailyWordCount[today]) {
+                    dailyWordCount[today] = 0;
+                }
+                
+                dailyWordCount[today] = words.length;
+                localStorage.setItem('dailyWordCount', JSON.stringify(dailyWordCount));
+            }
+
+            function showActivityLog() {
+                alert('Activity log feature would show your daily writing statistics here.');
+                // In a full implementation, this would open a modal with charts
+            }
+        });
+    </script>
+</body>
+</html>
